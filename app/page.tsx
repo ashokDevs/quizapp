@@ -5,8 +5,17 @@ import QuizForm from '../components/QuizForm'
 import Quiz from '../components/Quiz'
 import React from 'react'
 
+// Define the QuizQuestion interface here as well, or import it from a shared types file
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  code?: string;
+  language?: string;
+}
+
 export default function Home() {
-  const [quiz, setQuiz] = useState(null)
+  const [quiz, setQuiz] = useState<QuizQuestion[] | null>(null)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">

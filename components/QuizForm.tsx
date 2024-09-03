@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import {
@@ -11,15 +11,28 @@ import {
   SelectValue,
 } from "./ui/select"
 import { Loader2 } from "lucide-react"
-import React from 'react'
 
-const QuizForm = ({ onQuizGenerated }) => {
+// Define the structure of a quiz question
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  code?: string;
+  language?: string;
+}
+
+// Define the props for the QuizForm component
+interface QuizFormProps {
+  onQuizGenerated: (quiz: QuizQuestion[]) => void;
+}
+
+const QuizForm: React.FC<QuizFormProps> = ({ onQuizGenerated }) => {
   const [topic, setTopic] = useState('')
   const [numQuestions, setNumQuestions] = useState('5')
   const [difficulty, setDifficulty] = useState('medium')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     try {
@@ -30,7 +43,7 @@ const QuizForm = ({ onQuizGenerated }) => {
         },
         body: JSON.stringify({ topic, numQuestions: parseInt(numQuestions), difficulty }),
       })
-      const quiz = await response.json()
+      const quiz: QuizQuestion[] = await response.json()
       onQuizGenerated(quiz)
     } catch (error) {
       console.error('Error generating quiz:', error)

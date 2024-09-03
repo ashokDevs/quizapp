@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import Prism from 'prismjs'
@@ -8,15 +8,39 @@ import 'prismjs/themes/prism-tomorrow.css'
 import 'prismjs/components/prism-javascript'
 import 'prismjs/components/prism-typescript'
 import 'prismjs/components/prism-python'
-import React from 'react'
-// Add more language components as needed
 
-const Quiz = ({ quiz, onReset }) => {
+const formatCode = (code: string) => {
+  // Simple formatting for demonstration purposes
+  // You might want to use a more sophisticated code formatter in production
+  return code
+    .replace(/\{/g, '{\n  ')
+    .replace(/\}/g, '\n}')
+    .replace(/;/g, ';\n  ')
+    .replace(/\s+$/gm, '')  // Remove trailing spaces
+    .trim()
+}
+
+// Define the structure of a quiz question
+interface QuizQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  code?: string;
+  language?: string;
+}
+
+// Define the props for the Quiz component
+interface QuizProps {
+  quiz: QuizQuestion[];
+  onReset: () => void;
+}
+
+const Quiz: React.FC<QuizProps> = ({ quiz, onReset }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
   const [showResult, setShowResult] = useState(false)
 
-  const handleAnswer = (isCorrect) => {
+  const handleAnswer = (isCorrect: boolean) => {
     if (isCorrect) setScore(score + 1)
     if (currentQuestion < quiz.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
@@ -53,9 +77,9 @@ const Quiz = ({ quiz, onReset }) => {
       <CardContent>
         <p className="mb-4">{question.question}</p>
         {question.code && (
-          <pre className="rounded mb-4 overflow-x-auto p-4 bg-muted">
+          <pre className="rounded mb-4 overflow-x-auto p-4 bg-muted whitespace-pre-wrap">
             <code className={`language-${question.language || 'javascript'}`}>
-              {question.code}
+              {formatCode(question.code)}
             </code>
           </pre>
         )}
